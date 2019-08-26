@@ -1,0 +1,437 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ProjectManagerDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ParentTask">
+          <Key>
+            <PropertyRef Name="Parent_ID" />
+          </Key>
+          <Property Name="Parent_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Parent_Task" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Project">
+          <Key>
+            <PropertyRef Name="Project_ID" />
+          </Key>
+          <Property Name="Project_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjectName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Start_Date" Type="date" Nullable="false" />
+          <Property Name="End_Date" Type="date" Nullable="false" />
+          <Property Name="Priority" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Task">
+          <Key>
+            <PropertyRef Name="Task_ID" />
+          </Key>
+          <Property Name="Task_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Parent_ID" Type="int" />
+          <Property Name="Project_ID" Type="int" />
+          <Property Name="TaskName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Start_Date" Type="date" Nullable="false" />
+          <Property Name="End_Date" Type="date" />
+          <Property Name="Priority" Type="nvarchar" MaxLength="20" />
+          <Property Name="Status" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="User_ID" />
+          </Key>
+          <Property Name="User_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="First_Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Last_Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Employee_ID" Type="int" />
+          <Property Name="Project_ID" Type="int" />
+          <Property Name="Task_ID" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ProjectManagerDB.dbo.view_ProjectSearch' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="view_ProjectSearch">
+          <Key>
+            <PropertyRef Name="Project_ID" />
+            <PropertyRef Name="ProjectName" />
+            <PropertyRef Name="User_FullName" />
+            <PropertyRef Name="Start_Date" />
+            <PropertyRef Name="End_Date" />
+          </Key>
+          <Property Name="Project_ID" Type="int" Nullable="false" />
+          <Property Name="ProjectName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Project_Start_Date" Type="varchar" MaxLength="10" />
+          <Property Name="Project_End_Date" Type="varchar" MaxLength="10" />
+          <Property Name="Project_Priority" Type="nvarchar" MaxLength="20" />
+          <Property Name="User_ID" Type="int" />
+          <Property Name="User_ProjectID" Type="int" />
+          <Property Name="User_EmployeeID" Type="int" />
+          <Property Name="User_FirstName" Type="nvarchar(max)" />
+          <Property Name="User_LastName" Type="nvarchar(max)" />
+          <Property Name="User_FullName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="No_OfTask" Type="int" />
+          <Property Name="NumberOfTaskCompleted" Type="int" />
+          <Property Name="Start_Date" Type="date" Nullable="false" />
+          <Property Name="End_Date" Type="date" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'ProjectManagerDB.dbo.view_TaskSearch' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="view_TaskSearch">
+          <Key>
+            <PropertyRef Name="TaskName" />
+            <PropertyRef Name="Task_ID" />
+            <PropertyRef Name="Start_Date" />
+            <PropertyRef Name="TaskStatus" />
+            <PropertyRef Name="TaskTooltip" />
+            <PropertyRef Name="MappedProject" />
+          </Key>
+          <Property Name="TaskName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Task_ID" Type="int" Nullable="false" />
+          <Property Name="Start_Date" Type="date" Nullable="false" />
+          <Property Name="End_Date" Type="date" />
+          <Property Name="TaskStartDate" Type="varchar" MaxLength="10" />
+          <Property Name="TaskEndDate" Type="varchar" MaxLength="10" />
+          <Property Name="TaskPriority" Type="nvarchar" MaxLength="20" />
+          <Property Name="TaskStatus" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="IsTaskCompleted" Type="bit" />
+          <Property Name="TaskTooltip" Type="varchar" MaxLength="17" Nullable="false" />
+          <Property Name="ParentTask" Type="varchar" MaxLength="50" />
+          <Property Name="MappedProject" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="TaskParentID" Type="int" />
+          <Property Name="TaskProjectID" Type="int" />
+          <Property Name="First_Name" Type="nvarchar(max)" />
+          <Property Name="AssignedUserID" Type="int" />
+        </EntityType>
+        <Association Name="FK_Task_ParentTask_Parent_ID">
+          <End Role="ParentTask" Type="Self.ParentTask" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ParentTask">
+              <PropertyRef Name="Parent_ID" />
+            </Principal>
+            <Dependent Role="Task">
+              <PropertyRef Name="Parent_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_Project_Project_ID">
+          <End Role="Project" Type="Self.Project" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="Project_ID" />
+            </Principal>
+            <Dependent Role="Task">
+              <PropertyRef Name="Project_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ProjectManagerDBModelStoreContainer">
+          <EntitySet Name="ParentTask" EntityType="Self.ParentTask" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Project" EntityType="Self.Project" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Task" EntityType="Self.Task" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="view_ProjectSearch" EntityType="Self.view_ProjectSearch" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [view_ProjectSearch].[Project_ID] AS [Project_ID], 
+    [view_ProjectSearch].[ProjectName] AS [ProjectName], 
+    [view_ProjectSearch].[Project_Start_Date] AS [Project_Start_Date], 
+    [view_ProjectSearch].[Project_End_Date] AS [Project_End_Date], 
+    [view_ProjectSearch].[Project_Priority] AS [Project_Priority], 
+    [view_ProjectSearch].[User_ID] AS [User_ID], 
+    [view_ProjectSearch].[User_ProjectID] AS [User_ProjectID], 
+    [view_ProjectSearch].[User_EmployeeID] AS [User_EmployeeID], 
+    [view_ProjectSearch].[User_FirstName] AS [User_FirstName], 
+    [view_ProjectSearch].[User_LastName] AS [User_LastName], 
+    [view_ProjectSearch].[User_FullName] AS [User_FullName], 
+    [view_ProjectSearch].[No_OfTask] AS [No_OfTask], 
+    [view_ProjectSearch].[NumberOfTaskCompleted] AS [NumberOfTaskCompleted], 
+    [view_ProjectSearch].[Start_Date] AS [Start_Date], 
+    [view_ProjectSearch].[End_Date] AS [End_Date]
+    FROM [dbo].[view_ProjectSearch] AS [view_ProjectSearch]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="view_TaskSearch" EntityType="Self.view_TaskSearch" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [view_TaskSearch].[TaskName] AS [TaskName], 
+    [view_TaskSearch].[Task_ID] AS [Task_ID], 
+    [view_TaskSearch].[Start_Date] AS [Start_Date], 
+    [view_TaskSearch].[End_Date] AS [End_Date], 
+    [view_TaskSearch].[TaskStartDate] AS [TaskStartDate], 
+    [view_TaskSearch].[TaskEndDate] AS [TaskEndDate], 
+    [view_TaskSearch].[TaskPriority] AS [TaskPriority], 
+    [view_TaskSearch].[TaskStatus] AS [TaskStatus], 
+    [view_TaskSearch].[IsTaskCompleted] AS [IsTaskCompleted], 
+    [view_TaskSearch].[TaskTooltip] AS [TaskTooltip], 
+    [view_TaskSearch].[ParentTask] AS [ParentTask], 
+    [view_TaskSearch].[MappedProject] AS [MappedProject], 
+    [view_TaskSearch].[TaskParentID] AS [TaskParentID], 
+    [view_TaskSearch].[TaskProjectID] AS [TaskProjectID], 
+    [view_TaskSearch].[First_Name] AS [First_Name], 
+    [view_TaskSearch].[AssignedUserID] AS [AssignedUserID]
+    FROM [dbo].[view_TaskSearch] AS [view_TaskSearch]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Task_ParentTask_Parent_ID" Association="Self.FK_Task_ParentTask_Parent_ID">
+            <End Role="ParentTask" EntitySet="ParentTask" />
+            <End Role="Task" EntitySet="Task" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Project_Project_ID" Association="Self.FK_Task_Project_Project_ID">
+            <End Role="Project" EntitySet="Project" />
+            <End Role="Task" EntitySet="Task" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ProjectManagerDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ParentTask">
+          <Key>
+            <PropertyRef Name="Parent_ID" />
+          </Key>
+          <Property Name="Parent_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Parent_Task" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Tasks" Relationship="Self.FK_Task_ParentTask_Parent_ID" FromRole="ParentTask" ToRole="Task" />
+        </EntityType>
+        <EntityType Name="Project">
+          <Key>
+            <PropertyRef Name="Project_ID" />
+          </Key>
+          <Property Name="Project_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjectName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Start_Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="End_Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Priority" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Tasks" Relationship="Self.FK_Task_Project_Project_ID" FromRole="Project" ToRole="Task" />
+        </EntityType>
+        <EntityType Name="Task">
+          <Key>
+            <PropertyRef Name="Task_ID" />
+          </Key>
+          <Property Name="Task_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Parent_ID" Type="Int32" />
+          <Property Name="Project_ID" Type="Int32" />
+          <Property Name="TaskName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Start_Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="End_Date" Type="DateTime" Precision="0" />
+          <Property Name="Priority" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ParentTask" Relationship="Self.FK_Task_ParentTask_Parent_ID" FromRole="Task" ToRole="ParentTask" />
+          <NavigationProperty Name="Project" Relationship="Self.FK_Task_Project_Project_ID" FromRole="Task" ToRole="Project" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="User_ID" />
+          </Key>
+          <Property Name="User_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="First_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Last_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Employee_ID" Type="Int32" />
+          <Property Name="Project_ID" Type="Int32" />
+          <Property Name="Task_ID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="view_ProjectSearch">
+          <Key>
+            <PropertyRef Name="Project_ID" />
+            <PropertyRef Name="ProjectName" />
+            <PropertyRef Name="User_FullName" />
+            <PropertyRef Name="Start_Date" />
+            <PropertyRef Name="End_Date" />
+          </Key>
+          <Property Name="Project_ID" Type="Int32" Nullable="false" />
+          <Property Name="ProjectName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Project_Start_Date" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Project_End_Date" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Project_Priority" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="User_ID" Type="Int32" />
+          <Property Name="User_ProjectID" Type="Int32" />
+          <Property Name="User_EmployeeID" Type="Int32" />
+          <Property Name="User_FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="User_LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="User_FullName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="No_OfTask" Type="Int32" />
+          <Property Name="NumberOfTaskCompleted" Type="Int32" />
+          <Property Name="Start_Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="End_Date" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="view_TaskSearch">
+          <Key>
+            <PropertyRef Name="TaskName" />
+            <PropertyRef Name="Task_ID" />
+            <PropertyRef Name="Start_Date" />
+            <PropertyRef Name="TaskStatus" />
+            <PropertyRef Name="TaskTooltip" />
+            <PropertyRef Name="MappedProject" />
+          </Key>
+          <Property Name="TaskName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Task_ID" Type="Int32" Nullable="false" />
+          <Property Name="Start_Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="End_Date" Type="DateTime" Precision="0" />
+          <Property Name="TaskStartDate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TaskEndDate" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TaskPriority" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TaskStatus" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsTaskCompleted" Type="Boolean" />
+          <Property Name="TaskTooltip" Type="String" MaxLength="17" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ParentTask" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MappedProject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TaskParentID" Type="Int32" />
+          <Property Name="TaskProjectID" Type="Int32" />
+          <Property Name="First_Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AssignedUserID" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_Task_ParentTask_Parent_ID">
+          <End Role="ParentTask" Type="Self.ParentTask" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ParentTask">
+              <PropertyRef Name="Parent_ID" />
+            </Principal>
+            <Dependent Role="Task">
+              <PropertyRef Name="Parent_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Task_Project_Project_ID">
+          <End Role="Project" Type="Self.Project" Multiplicity="0..1" />
+          <End Role="Task" Type="Self.Task" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Project">
+              <PropertyRef Name="Project_ID" />
+            </Principal>
+            <Dependent Role="Task">
+              <PropertyRef Name="Project_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ProjectManagerDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ParentTasks" EntityType="Self.ParentTask" />
+          <EntitySet Name="Projects" EntityType="Self.Project" />
+          <EntitySet Name="Tasks" EntityType="Self.Task" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="view_ProjectSearch" EntityType="Self.view_ProjectSearch" />
+          <EntitySet Name="view_TaskSearch" EntityType="Self.view_TaskSearch" />
+          <AssociationSet Name="FK_Task_ParentTask_Parent_ID" Association="Self.FK_Task_ParentTask_Parent_ID">
+            <End Role="ParentTask" EntitySet="ParentTasks" />
+            <End Role="Task" EntitySet="Tasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Task_Project_Project_ID" Association="Self.FK_Task_Project_Project_ID">
+            <End Role="Project" EntitySet="Projects" />
+            <End Role="Task" EntitySet="Tasks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ProjectManagerDBModelStoreContainer" CdmEntityContainer="ProjectManagerDBEntities">
+          <EntitySetMapping Name="ParentTasks">
+            <EntityTypeMapping TypeName="ProjectManagerDBModel.ParentTask">
+              <MappingFragment StoreEntitySet="ParentTask">
+                <ScalarProperty Name="Parent_ID" ColumnName="Parent_ID" />
+                <ScalarProperty Name="Parent_Task" ColumnName="Parent_Task" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Projects">
+            <EntityTypeMapping TypeName="ProjectManagerDBModel.Project">
+              <MappingFragment StoreEntitySet="Project">
+                <ScalarProperty Name="Project_ID" ColumnName="Project_ID" />
+                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+                <ScalarProperty Name="Start_Date" ColumnName="Start_Date" />
+                <ScalarProperty Name="End_Date" ColumnName="End_Date" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tasks">
+            <EntityTypeMapping TypeName="ProjectManagerDBModel.Task">
+              <MappingFragment StoreEntitySet="Task">
+                <ScalarProperty Name="Task_ID" ColumnName="Task_ID" />
+                <ScalarProperty Name="Parent_ID" ColumnName="Parent_ID" />
+                <ScalarProperty Name="Project_ID" ColumnName="Project_ID" />
+                <ScalarProperty Name="TaskName" ColumnName="TaskName" />
+                <ScalarProperty Name="Start_Date" ColumnName="Start_Date" />
+                <ScalarProperty Name="End_Date" ColumnName="End_Date" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="ProjectManagerDBModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="User_ID" ColumnName="User_ID" />
+                <ScalarProperty Name="First_Name" ColumnName="First_Name" />
+                <ScalarProperty Name="Last_Name" ColumnName="Last_Name" />
+                <ScalarProperty Name="Employee_ID" ColumnName="Employee_ID" />
+                <ScalarProperty Name="Project_ID" ColumnName="Project_ID" />
+                <ScalarProperty Name="Task_ID" ColumnName="Task_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="view_ProjectSearch">
+            <EntityTypeMapping TypeName="ProjectManagerDBModel.view_ProjectSearch">
+              <MappingFragment StoreEntitySet="view_ProjectSearch">
+                <ScalarProperty Name="Project_ID" ColumnName="Project_ID" />
+                <ScalarProperty Name="ProjectName" ColumnName="ProjectName" />
+                <ScalarProperty Name="Project_Start_Date" ColumnName="Project_Start_Date" />
+                <ScalarProperty Name="Project_End_Date" ColumnName="Project_End_Date" />
+                <ScalarProperty Name="Project_Priority" ColumnName="Project_Priority" />
+                <ScalarProperty Name="User_ID" ColumnName="User_ID" />
+                <ScalarProperty Name="User_ProjectID" ColumnName="User_ProjectID" />
+                <ScalarProperty Name="User_EmployeeID" ColumnName="User_EmployeeID" />
+                <ScalarProperty Name="User_FirstName" ColumnName="User_FirstName" />
+                <ScalarProperty Name="User_LastName" ColumnName="User_LastName" />
+                <ScalarProperty Name="User_FullName" ColumnName="User_FullName" />
+                <ScalarProperty Name="No_OfTask" ColumnName="No_OfTask" />
+                <ScalarProperty Name="NumberOfTaskCompleted" ColumnName="NumberOfTaskCompleted" />
+                <ScalarProperty Name="Start_Date" ColumnName="Start_Date" />
+                <ScalarProperty Name="End_Date" ColumnName="End_Date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="view_TaskSearch">
+            <EntityTypeMapping TypeName="ProjectManagerDBModel.view_TaskSearch">
+              <MappingFragment StoreEntitySet="view_TaskSearch">
+                <ScalarProperty Name="TaskName" ColumnName="TaskName" />
+                <ScalarProperty Name="Task_ID" ColumnName="Task_ID" />
+                <ScalarProperty Name="Start_Date" ColumnName="Start_Date" />
+                <ScalarProperty Name="End_Date" ColumnName="End_Date" />
+                <ScalarProperty Name="TaskStartDate" ColumnName="TaskStartDate" />
+                <ScalarProperty Name="TaskEndDate" ColumnName="TaskEndDate" />
+                <ScalarProperty Name="TaskPriority" ColumnName="TaskPriority" />
+                <ScalarProperty Name="TaskStatus" ColumnName="TaskStatus" />
+                <ScalarProperty Name="IsTaskCompleted" ColumnName="IsTaskCompleted" />
+                <ScalarProperty Name="TaskTooltip" ColumnName="TaskTooltip" />
+                <ScalarProperty Name="ParentTask" ColumnName="ParentTask" />
+                <ScalarProperty Name="MappedProject" ColumnName="MappedProject" />
+                <ScalarProperty Name="TaskParentID" ColumnName="TaskParentID" />
+                <ScalarProperty Name="TaskProjectID" ColumnName="TaskProjectID" />
+                <ScalarProperty Name="First_Name" ColumnName="First_Name" />
+                <ScalarProperty Name="AssignedUserID" ColumnName="AssignedUserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
